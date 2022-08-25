@@ -2,6 +2,8 @@ package br.com.fredericosff.api.resource;
 
 import br.com.fredericosff.api.domain.dto.UsersDTO;
 import br.com.fredericosff.api.services.UserService;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +25,12 @@ public class UserResource {
   @GetMapping(value = "/{id}")
   public ResponseEntity<UsersDTO> findById(@PathVariable Integer id) {
     return ResponseEntity.ok().body(mapper.map(service.findById(id), UsersDTO.class));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<UsersDTO>> findAll() {
+    return ResponseEntity.ok()
+        .body(service.findAll().stream().map(x -> mapper.map(x, UsersDTO.class))
+            .collect(Collectors.toList()));
   }
 }
