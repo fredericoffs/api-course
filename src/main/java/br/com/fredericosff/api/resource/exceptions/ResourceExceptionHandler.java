@@ -1,5 +1,6 @@
 package br.com.fredericosff.api.resource.exceptions;
 
+import br.com.fredericosff.api.services.exceptions.DataIntegrityViolationException;
 import br.com.fredericosff.api.services.exceptions.ObjectNotFoundException;
 import java.time.LocalDateTime;
 import javax.servlet.http.HttpServletRequest;
@@ -17,5 +18,13 @@ public class ResourceExceptionHandler {
     StandardError error = new StandardError(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(),
         ex.getMessage(), request.getRequestURI());
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<StandardError> dataIntegrityViolationException(
+      DataIntegrityViolationException ex, HttpServletRequest request) {
+    StandardError error = new StandardError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(),
+        ex.getMessage(), request.getRequestURI());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
   }
 }

@@ -4,6 +4,7 @@ import br.com.fredericosff.api.domain.Users;
 import br.com.fredericosff.api.domain.dto.UsersDTO;
 import br.com.fredericosff.api.repositories.UserRepository;
 import br.com.fredericosff.api.services.UserService;
+import br.com.fredericosff.api.services.exceptions.DataIntegrityViolationException;
 import br.com.fredericosff.api.services.exceptions.ObjectNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +33,14 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Users create(UsersDTO obj) {
+    findByEmail(obj);
     return repository.save(mapper.map(obj, Users.class));
   }
 
-
+  private void findByEmail(UsersDTO obj){
+    Optional<Users> user = repository.findByEmail(obj.getEmail());
+    if(user.isPresent()){
+      throw new DataIntegrityViolationException("email already exists.");
+    }
+  }
 }
