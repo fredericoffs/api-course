@@ -2,13 +2,15 @@ package br.com.fredericosff.api.services.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
 import br.com.fredericosff.api.domain.Users;
 import br.com.fredericosff.api.domain.dto.UsersDTO;
 import br.com.fredericosff.api.repositories.UserRepository;
+import br.com.fredericosff.api.services.exceptions.DataIntegrityViolationException;
 import br.com.fredericosff.api.services.exceptions.ObjectNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -105,6 +106,23 @@ class UserServiceImplTest {
     assertEquals(NAME, response.getName());
     assertEquals(EMAIL, response.getEmail());
     assertEquals(PASSWORD, response.getPassword());
+  }
+
+  @Test
+  void whenCreateThenReturnADataIntegrityViolationException() {
+    when(repository.findByEmail(anyString())).thenReturn(optionalUsers);
+
+    Users response = service.create(usersDTO);
+
+    try {
+      if (optionalUsers.isPresent()){
+        optionalUsers.get().setId(2);
+        service.create(usersDTO);
+      }
+    } catch (Exception ex) {
+      assertEquals(DataIntegrityViolationException.class, ex.getClass());
+      assertEquals("email already exists.", ex.getMessage());
+    }
   }
 
   @Test
