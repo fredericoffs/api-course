@@ -9,6 +9,7 @@ import br.com.fredericosff.api.domain.Users;
 import br.com.fredericosff.api.domain.dto.UsersDTO;
 import br.com.fredericosff.api.repositories.UserRepository;
 import br.com.fredericosff.api.services.exceptions.ObjectNotFoundException;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ class UserServiceImplTest {
   public static final String EMAIL = "user1@mail.com";
   public static final String PASSWORD = "123";
   public static final String USER_NOT_FOUND = "User not found.";
+  public static final int INDEX = 0;
 
   @InjectMocks
   private UserServiceImpl service;
@@ -64,7 +66,7 @@ class UserServiceImplTest {
   void whenFindByIdThenReturnAnUserNotFoundException() {
     when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException(USER_NOT_FOUND));
 
-    try{
+    try {
       service.findById(ID);
     } catch (Exception ex) {
       assertEquals(ObjectNotFoundException.class, ex.getClass());
@@ -73,7 +75,19 @@ class UserServiceImplTest {
   }
 
   @Test
-  void findAll() {
+  void whenFindAllThenReturnAListOfUsers() {
+    when(repository.findAll()).thenReturn(List.of(users));
+
+    List<Users> response = service.findAll();
+
+    assertNotNull(response);
+    assertEquals(1, response.size());
+    assertEquals(Users.class, response.get(INDEX).getClass());
+
+    assertEquals(ID, response.get(INDEX).getId());
+    assertEquals(NAME, response.get(INDEX).getName());
+    assertEquals(EMAIL, response.get(INDEX).getEmail());
+    assertEquals(PASSWORD, response.get(INDEX).getPassword());
   }
 
   @Test
