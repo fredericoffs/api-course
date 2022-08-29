@@ -2,6 +2,7 @@ package br.com.fredericosff.api.services.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -91,7 +93,18 @@ class UserServiceImplTest {
   }
 
   @Test
-  void create() {
+  void whenCreateThenReturnSuccess() {
+    when(repository.save(any())).thenReturn(users);
+
+    Users response = service.create(usersDTO);
+
+    assertNotNull(response);
+    assertEquals(Users.class, response.getClass());
+
+    assertEquals(ID, response.getId());
+    assertEquals(NAME, response.getName());
+    assertEquals(EMAIL, response.getEmail());
+    assertEquals(PASSWORD, response.getPassword());
   }
 
   @Test
