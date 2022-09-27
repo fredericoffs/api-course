@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import br.com.fredericosff.api.domain.Users;
@@ -114,7 +117,7 @@ class UserServiceImplTest {
     when(repository.findByEmail(anyString())).thenReturn(optionalUsers);
 
     try {
-      if (optionalUsers.isPresent()){
+      if (optionalUsers.isPresent()) {
         optionalUsers.get().setId(2);
         service.create(usersDTO);
       }
@@ -144,7 +147,7 @@ class UserServiceImplTest {
     when(repository.findByEmail(anyString())).thenReturn(optionalUsers);
 
     try {
-      if (optionalUsers.isPresent()){
+      if (optionalUsers.isPresent()) {
         optionalUsers.get().setId(2);
         service.update(usersDTO);
       }
@@ -155,7 +158,11 @@ class UserServiceImplTest {
   }
 
   @Test
-  void delete() {
+  void deleteWithSuccess() {
+    when(repository.findById(anyInt())).thenReturn(optionalUsers);
+    doNothing().when(repository).deleteById(anyInt());
+    service.delete(ID);
+    verify(repository, times(1)).deleteById(anyInt());
   }
 
   private void startUser() {
