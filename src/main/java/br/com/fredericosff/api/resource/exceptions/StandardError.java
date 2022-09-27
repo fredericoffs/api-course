@@ -3,10 +3,8 @@ package br.com.fredericosff.api.resource.exceptions;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class StandardError {
 
