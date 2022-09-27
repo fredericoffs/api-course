@@ -73,7 +73,7 @@ class UserResourceTest {
   @Test
   void whenFindAllThenReturnAListOfUsersDTO() {
     when(service.findAll()).thenReturn(List.of(users));
-    when(mapper.map(any(),any())).thenReturn(usersDTO);
+    when(mapper.map(any(), any())).thenReturn(usersDTO);
 
     ResponseEntity<List<UsersDTO>> response = resource.findAll();
 
@@ -102,7 +102,21 @@ class UserResourceTest {
   }
 
   @Test
-  void update() {
+  void whenUpdateThenReturnSuccess() {
+    when(service.update(usersDTO)).thenReturn(users);
+    when(mapper.map(any(), any())).thenReturn(usersDTO);
+
+    ResponseEntity<UsersDTO> response = resource.update(ID, usersDTO);
+
+    assertNotNull(response);
+    assertNotNull(response.getBody());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(ResponseEntity.class, response.getClass());
+    assertEquals(UsersDTO.class, response.getBody().getClass());
+
+    assertEquals(ID, response.getBody().getId());
+    assertEquals(NAME, response.getBody().getName());
+    assertEquals(EMAIL, response.getBody().getEmail());
   }
 
   @Test
