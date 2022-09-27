@@ -36,8 +36,8 @@ class UserResourceTest {
   public static final int INDEX = 0;
   public static final String EMAIL_ALREADY_EXISTS = "email already exists.";
 
-  private Users users;
-  private UsersDTO usersDTO;
+  private Users users = new Users();
+  private UsersDTO usersDTO = new UsersDTO();
   private Optional<Users> optionalUsers;
 
   @InjectMocks

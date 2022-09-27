@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class StandardError {
-
   private LocalDateTime timestamp;
   private Integer status;
   private String error;
