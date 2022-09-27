@@ -1,5 +1,11 @@
 package br.com.fredericosff.api.resource;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.when;
+
 import br.com.fredericosff.api.domain.Users;
 import br.com.fredericosff.api.domain.dto.UsersDTO;
 import br.com.fredericosff.api.services.impl.UserServiceImpl;
@@ -11,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 
 @SpringBootTest
 class UserResourceTest {
@@ -43,7 +50,21 @@ class UserResourceTest {
   }
 
   @Test
-  void findById() {
+  void whenFindByIdThenReturnSuccess() {
+    when(service.findById(anyInt())).thenReturn(users);
+    when(mapper.map(any(), any())).thenReturn(usersDTO);
+
+    ResponseEntity<UsersDTO> response = resource.findById(ID);
+
+    assertNotNull(response);
+    assertNotNull(response.getBody());
+    assertEquals(ResponseEntity.class, response.getClass());
+    assertEquals(UsersDTO.class, response.getBody().getClass());
+
+    assertEquals(ID, response.getBody().getId());
+    assertEquals(NAME, response.getBody().getName());
+    assertEquals(EMAIL, response.getBody().getEmail());
+    assertEquals(PASSWORD, response.getBody().getPassword());
   }
 
   @Test
